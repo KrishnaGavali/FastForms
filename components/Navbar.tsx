@@ -51,8 +51,8 @@ interface NavbarProps {
 
 const Navbar = ({
   logo = {
-    url: "http://localhost:3000",
-    src:  <FormIcon className="text-primary"/>,
+    url: "/",
+    src: <FormIcon className="text-primary" />,
     alt: "FastForms Logo",
     title: "FastForms",
   },

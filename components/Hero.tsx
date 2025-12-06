@@ -1,6 +1,7 @@
 import { FormIcon, Wifi, Zap, Chrome } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { siGoogle } from "simple-icons";
 
 interface HeroProps {
   icon?: React.ReactNode;
@@ -53,7 +54,12 @@ const Hero = ({
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button size="lg" asChild>
                   <a href="/">
-                    <Chrome className="mr-2 size-4" /> Get Started with Google
+                    <img
+                      src="https://cdn.simpleicons.org/google/000000"
+                      alt="google-icon"
+                      className="size-4"
+                    />
+                    Get Started with Google
                   </a>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
@@ -80,7 +86,7 @@ const Hero = ({
           }
 
 
-          
+
         </div>
       </div>
     </section>
