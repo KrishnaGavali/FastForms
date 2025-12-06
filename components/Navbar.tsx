@@ -1,6 +1,7 @@
 "use client";
 
 import { Book, Menu, Sunset, Trees, Zap, FormIcon, Chrome } from "lucide-react";
+import { siGoogle } from "simple-icons";
 
 import {
   Accordion,
@@ -60,7 +61,7 @@ const Navbar = ({
     { title: "Demo", url: "#" },
     {
       title: "Features",
-      url: "#"
+      url: "#",
     },
     {
       title: "Pricing",
@@ -68,7 +69,7 @@ const Navbar = ({
     },
   ],
   auth = {
-    loginGoogle: { title: "Login with Google", url: "#" },
+    loginGoogle: { title: "Login with Google", url: "/api/auth/google" },
   },
 }: NavbarProps) => {
   return (
@@ -95,7 +96,11 @@ const Navbar = ({
           <div className="flex gap-2">
             <Button asChild size="sm">
               <a href={auth.loginGoogle.url}>
-                <Chrome className="mr-2 size-4" />
+                <img
+                  src="https://cdn.simpleicons.org/google/000000"
+                  alt="google-icon"
+                  className="size-4"
+                />
                 {auth.loginGoogle.title}
               </a>
             </Button>
@@ -135,7 +140,11 @@ const Navbar = ({
                   <div className="flex flex-col gap-3">
                     <Button asChild>
                       <a href={auth.loginGoogle.url}>
-                        <Chrome className="mr-2 size-4" />
+                        <img
+                          src="https://cdn.simpleicons.org/google/000000"
+                          alt="google-icon"
+                          className="size-4"
+                        />
                         {auth.loginGoogle.title}
                       </a>
                     </Button>

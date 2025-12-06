@@ -1,7 +1,6 @@
 import { FormIcon, Wifi, Zap, Chrome } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { siGoogle } from "simple-icons";
 
 interface HeroProps {
   icon?: React.ReactNode;
@@ -73,20 +72,15 @@ const Hero = ({
               )}
             </div>
           </div>
-          {
-            imageSrc && imageAlt ? (
-              <img
-                src={imageSrc}
-                alt={imageAlt}
-                className="mx-auto h-full max-h-[524px] w-full max-w-5xl rounded-2xl object-cover"
-              />
-            ) : (
-              <div className="mx-auto h-[524px] max-h-[524px] w-full max-w-5xl rounded-2xl bg-muted" />
-            )
-          }
-
-
-
+          {imageSrc && imageAlt ? (
+            <img
+              src={imageSrc}
+              alt={imageAlt}
+              className="mx-auto h-full max-h-[524px] w-full max-w-5xl rounded-2xl object-cover"
+            />
+          ) : (
+            <div className="mx-auto h-[524px] max-h-[524px] w-full max-w-5xl rounded-2xl bg-muted" />
+          )}
         </div>
       </div>
     </section>
