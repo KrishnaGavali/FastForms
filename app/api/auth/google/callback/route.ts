@@ -1,4 +1,3 @@
-import { googleAuthScopes } from "@/providers/googleAuth";
 import GoogleAuthService from "@/services/AuthService";
 import { NextResponse } from "next/server";
 
@@ -7,11 +6,7 @@ export async function POST(req: Request) {
 
   const googleAuthService = new GoogleAuthService();
 
-  googleAuthService.getToken(code).then(async (res) => {
-    const tokens = res.tokens;
-    console.log(res);
-    console.log("Tokens:", tokens);
-  });
+  const res = await googleAuthService.getToken(code);
 
   return NextResponse.json(
     {
