@@ -22,9 +22,7 @@ const page = () => {
         return (
           <>
             <h1 className="text-2xl font-bold">Authenticating</h1>
-            <CardDescription>
-              Please wait while we redirect you to the authentication provider.
-            </CardDescription>
+            <CardDescription>Please wait while log you in ...</CardDescription>
             <CardAction>
               <div className="loader mt-4 flex justify-center">
                 <div className="w-8 h-8 border-4 border-primary border-t-transparent border-l-transparent rounded-full animate-spin"></div>

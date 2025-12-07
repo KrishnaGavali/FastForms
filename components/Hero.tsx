@@ -17,7 +17,9 @@ interface HeroProps {
 }
 
 const Hero = ({
-  icon = <FormIcon className="size-6 text-primary" />,
+  icon = (
+    <FormIcon className=" text-primary bg-primary/20 p-1 size-8 rounded-sm border border-primary/50" />
+  ),
   heading = "Lovable For Google Forms",
   description = "Create and edit Google Forms by chatting. Transform your ideas into fully functional forms in seconds with our AI-powered form builder.",
   button,

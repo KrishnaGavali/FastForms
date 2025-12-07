@@ -1,7 +1,6 @@
 "use client";
 
-import { Book, Menu, Sunset, Trees, Zap, FormIcon, Chrome } from "lucide-react";
-import { siGoogle } from "simple-icons";
+import { Menu, FormIcon } from "lucide-react";
 
 import {
   Accordion,
@@ -53,7 +52,9 @@ interface NavbarProps {
 const Navbar = ({
   logo = {
     url: "/",
-    src: <FormIcon className="text-primary" />,
+    src: (
+      <FormIcon className=" text-primary bg-primary/20 p-1 size-8 rounded-sm border border-primary/50" />
+    ),
     alt: "FastForms Logo",
     title: "FastForms",
   },
