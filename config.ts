@@ -9,5 +9,3 @@ export const googleAuthConfig: googlAuthConfigType = {
   google_auth_client_secret: process.env.GOOGLE_AUTH_CLIENT_SECRET || " ",
   googl_auth_redirect_url: process.env.GOOGLE_AUTH_REDIRECT_URL || " ",
 };
-
-export const env: string = process.env.ENV || "";

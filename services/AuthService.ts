@@ -10,6 +10,10 @@ class GoogleAuthService {
       include_granted_scopes: true,
     });
   }
+
+  getToken(code: string) {
+    return oauth2Client.getToken(code);
+  }
 }
 
 export default GoogleAuthService;

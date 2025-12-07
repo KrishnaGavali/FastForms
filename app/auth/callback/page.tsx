@@ -6,23 +6,73 @@ import {
   CardDescription,
   CardHeader,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { FormIcon, CheckCircle, AlertCircle } from "lucide-react";
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { FormIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
-type AuthState = "loading" | "success" | "error";
+type AuthState = {
+  state: "loading" | "success" | "error";
+  desc: string;
+};
 
 const page = () => {
-  const [state, setState] = useState<AuthState>("loading");
+  const [state, setState] = useState<AuthState>({
+    state: "loading",
+    desc: "",
+  });
+  const searchParams = useSearchParams();
+
+  const [authState, setAuthState] = useState<AuthState>({
+    state: "loading",
+    desc: "Please wait while log you in ...",
+  });
+
+  const saveUser = async (code: string) => {
+    try {
+      const response = await fetch("/api/auth/google/callback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          code: `Bearer ${code}`,
+        },
+      });
+
+      if (response.ok) {
+        console.log("User authenticated successfully", await response.json());
+      }
+    } catch (error: any) {
+      console.error("Error authenticating user:", error);
+    }
+  };
+
+  useEffect(() => {
+    const handleAuth = async () => {
+      const error = searchParams.get("error");
+      const code = searchParams.get("code");
+      console.log("Error param:", error);
+
+      if (error && error === "access_denied") {
+        setAuthState({
+          state: "error",
+          desc: "User have denied access. Please try again.",
+        });
+      }
+
+      if (code) {
+        const res = await saveUser(code);
+      }
+    };
+
+    handleAuth();
+  }, []);
 
   const renderContent = () => {
-    switch (state) {
+    switch (authState.state) {
       case "loading":
         return (
           <>
             <h1 className="text-2xl font-bold">Authenticating</h1>
-            <CardDescription>Please wait while log you in ...</CardDescription>
+            <CardDescription>{authState.desc}</CardDescription>
             <CardAction>
               <div className="loader mt-4 flex justify-center">
                 <div className="w-8 h-8 border-4 border-primary border-t-transparent border-l-transparent rounded-full animate-spin"></div>
@@ -36,9 +86,7 @@ const page = () => {
             <h1 className="text-2xl font-bold flex items-center gap-2">
               Successful
             </h1>
-            <CardDescription>
-              Your account has been authenticated. Redirecting you now...
-            </CardDescription>
+            <CardDescription>{authState.desc}</CardDescription>
             <CardAction>
               <div className="mt-4 flex justify-center">
                 <p className="text-sm text-green-600 font-medium">
@@ -54,9 +102,7 @@ const page = () => {
             <h1 className="text-2xl font-bold flex items-center gap-2">
               Failed
             </h1>
-            <CardDescription>
-              Something went wrong during authentication. Please try again.
-            </CardDescription>
+            <CardDescription>{authState.desc}</CardDescription>
             <CardAction>
               <div className="mt-4 flex justify-center">
                 <p className="text-sm text-red-600 font-medium">
@@ -81,31 +127,6 @@ const page = () => {
       <Card className="w-full max-w-md px-5 ">
         <CardHeader className="space-y-4">{renderContent()}</CardHeader>
       </Card>
-
-      {/* Test Buttons */}
-      <div className="w-full max-w-md mt-6 flex gap-2 flex-wrap justify-center">
-        <Button
-          variant={state === "loading" ? "default" : "outline"}
-          onClick={() => setState("loading")}
-          size="sm"
-        >
-          Loading
-        </Button>
-        <Button
-          variant={state === "success" ? "default" : "outline"}
-          onClick={() => setState("success")}
-          size="sm"
-        >
-          Success
-        </Button>
-        <Button
-          variant={state === "error" ? "default" : "outline"}
-          onClick={() => setState("error")}
-          size="sm"
-        >
-          Error
-        </Button>
-      </div>
     </div>
   );
 };
