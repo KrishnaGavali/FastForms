@@ -24,15 +24,18 @@ const page = () => {
     desc: "Please wait while we log you in...",
   });
 
-  const saveUser = async (code: string) => {
+  const saveUser = async (code: string, prompt: string) => {
     try {
-      const response = await fetch("/api/auth/google/callback", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          code: `Bearer ${code}`,
-        },
-      });
+      const response = await fetch(
+        `/api/auth/google/callback?prompt=${prompt}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            code: `Bearer ${code}`,
+          },
+        }
+      );
 
       const data = await response.json();
 
@@ -65,6 +68,7 @@ const page = () => {
     const handleAuth = async () => {
       const error = searchParams.get("error");
       const code = searchParams.get("code");
+      const prompt = searchParams.get("prompt");
 
       if (error && error === "access_denied") {
         setAuthState({
@@ -74,7 +78,7 @@ const page = () => {
         return;
       }
 
-      if (!code) {
+      if (!code || !prompt) {
         setAuthState({
           state: "error",
           desc: "No authorization code received. Please try again.",
@@ -82,7 +86,7 @@ const page = () => {
         return;
       }
 
-      await saveUser(code);
+      await saveUser(code, prompt);
     };
 
     handleAuth();

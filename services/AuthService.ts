@@ -11,6 +11,7 @@ class GoogleAuthService {
       access_type: "offline",
       scope: googleAuthScopes,
       include_granted_scopes: true,
+      prompt: "consent",
     });
   }
 

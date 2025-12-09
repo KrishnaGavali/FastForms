@@ -1,10 +1,14 @@
 import GoogleAuthService from "@/services/AuthService";
+import AppwriteService from "@/services/appwriteService";
 import { googleAuthScopes } from "@/providers/googleAuth";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
     const code = req.headers.get("code")?.split(" ")[1] || "";
+    const prompt = req.headers.get("prompt") || "consent";
+
+    console.log("Received code:", code);
 
     if (!code) {
       return NextResponse.json(
@@ -18,6 +22,8 @@ export async function POST(req: Request) {
     }
 
     const res = await GoogleAuthService.getToken(code);
+
+    console.log("Token response:", res);
 
     if (!res?.tokens) {
       return NextResponse.json(
@@ -45,14 +51,55 @@ export async function POST(req: Request) {
     GoogleAuthService.setCredentials(res.tokens);
     const userInfo = await GoogleAuthService.getUserInfo();
 
-    console.log("User Info:", userInfo);
+    if (!userInfo) {
+      return NextResponse.json(
+        {
+          success: false,
+          error_state: "user_info_fetch_failed",
+          message: "Failed to fetch user info",
+        },
+        { status: 400 }
+      );
+    }
+
+    const userExists = await AppwriteService.userExists(userInfo.email!);
+
+    console.log("User exists response:", userExists);
+    console.log("Prompt value:", prompt);
+    console.log("Res tokens:", res.tokens);
+
+    if (
+      userExists &&
+      userExists.total === 0 &&
+      prompt === "consent" &&
+      res.tokens.expiry_date
+    ) {
+      const expiryDate = new Date(res.tokens.expiry_date).toISOString();
+      
+      await AppwriteService.createUser({
+        name: userInfo.name || "",
+        email: userInfo.email || "",
+        refreshToken: res.tokens.refresh_token || "",
+        accessToken: res.tokens.access_token || "",
+        refreshTokenExpiry: res.tokens.expiry_date,
+        profilePhotoUrl: userInfo.picture || "",
+      });
+      
+      console.log("Token expiry date:", expiryDate);
+    } else {
+      console.log("User already exists in the database.");
+    }
 
     return NextResponse.json(
       {
         success: true,
         message: "Token fetched successfully",
-        user: userInfo,
-        tokens: res.tokens,
+        user: {
+          id: userInfo.id,
+          name: userInfo.name,
+          email: userInfo.email,
+          picture: userInfo.picture,
+        },
       },
       { status: 200 }
     );
