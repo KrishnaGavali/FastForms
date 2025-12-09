@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { FormIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 type AuthState = {
   state: "loading" | "success" | "error";
@@ -16,15 +16,12 @@ type AuthState = {
 };
 
 const page = () => {
-  const [state, setState] = useState<AuthState>({
-    state: "loading",
-    desc: "",
-  });
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const [authState, setAuthState] = useState<AuthState>({
     state: "loading",
-    desc: "Please wait while log you in ...",
+    desc: "Please wait while we log you in...",
   });
 
   const saveUser = async (code: string) => {
@@ -37,11 +34,30 @@ const page = () => {
         },
       });
 
-      if (response.ok) {
-        console.log("User authenticated successfully", await response.json());
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setAuthState({
+          state: "success",
+          desc: "Login successful! Redirecting you now...",
+        });
+
+        // Redirect to home page after 2 seconds
+        setTimeout(() => {
+          router.push("/");
+        }, 2000);
+      } else {
+        setAuthState({
+          state: "error",
+          desc: data.message || "Authentication failed. Please try again.",
+        });
       }
     } catch (error: any) {
       console.error("Error authenticating user:", error);
+      setAuthState({
+        state: "error",
+        desc: "An error occurred during authentication. Please try again.",
+      });
     }
   };
 
@@ -49,22 +65,28 @@ const page = () => {
     const handleAuth = async () => {
       const error = searchParams.get("error");
       const code = searchParams.get("code");
-      console.log("Error param:", error);
 
       if (error && error === "access_denied") {
         setAuthState({
           state: "error",
-          desc: "User have denied access. Please try again.",
+          desc: "You denied access. Please try again.",
         });
+        return;
       }
 
-      if (code) {
-        const res = await saveUser(code);
+      if (!code) {
+        setAuthState({
+          state: "error",
+          desc: "No authorization code received. Please try again.",
+        });
+        return;
       }
+
+      await saveUser(code);
     };
 
     handleAuth();
-  }, []);
+  }, [searchParams]);
 
   const renderContent = () => {
     switch (authState.state) {
@@ -83,9 +105,7 @@ const page = () => {
       case "success":
         return (
           <>
-            <h1 className="text-2xl font-bold flex items-center gap-2">
-              Successful
-            </h1>
+            <h1 className="text-2xl font-bold">Successful</h1>
             <CardDescription>{authState.desc}</CardDescription>
             <CardAction>
               <div className="mt-4 flex justify-center">
@@ -99,15 +119,16 @@ const page = () => {
       case "error":
         return (
           <>
-            <h1 className="text-2xl font-bold flex items-center gap-2">
-              Failed
-            </h1>
+            <h1 className="text-2xl font-bold">Failed</h1>
             <CardDescription>{authState.desc}</CardDescription>
             <CardAction>
               <div className="mt-4 flex justify-center">
-                <p className="text-sm text-red-600 font-medium">
-                  ✗ Error occurred
-                </p>
+                <button
+                  onClick={() => router.push("/")}
+                  className="text-sm text-red-600 font-medium hover:underline"
+                >
+                  ✗ Try again
+                </button>
               </div>
             </CardAction>
           </>
@@ -132,17 +153,3 @@ const page = () => {
 };
 
 export default page;
-
-// <Card>
-//   <CardHeader>
-//     <CardTitle>Card Title</CardTitle>
-//     <CardDescription>Card Description</CardDescription>
-//     <CardAction>Card Action</CardAction>
-//   </CardHeader>
-//   <CardContent>
-//     <p>Card Content</p>
-//   </CardContent>
-//   <CardFooter>
-//     <p>Card Footer</p>
-//   </CardFooter>
-// </Card>

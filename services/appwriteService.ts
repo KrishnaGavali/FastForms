@@ -17,7 +17,7 @@ class AppwriteService {
   constructor() {}
 
   async createUser(user: userType) {
-    tablesDB.createRow({
+    return tablesDB.createRow({
       databaseId: this.dbId,
       tableId: this.userTableId,
       rowId: ID.unique(),
