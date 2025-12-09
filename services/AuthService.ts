@@ -12,7 +12,11 @@ class GoogleAuthService {
   }
 
   getToken(code: string) {
-    return oauth2Client.getToken(code);
+    try {
+      const res = oauth2Client.getToken(code);
+
+      return res;
+    } catch (error) {}
   }
 }
 
