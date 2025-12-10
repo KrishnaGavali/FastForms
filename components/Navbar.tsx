@@ -24,6 +24,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import useAuthStore from "@/store/AuthStore";
+import { Avatar, AvatarFallback } from "./ui/avatar";
+import { AvatarImage } from "@radix-ui/react-avatar";
 
 interface MenuItem {
   title: string;
@@ -49,6 +52,20 @@ interface NavbarProps {
   };
 }
 
+const AvatarName = ({ url, name }: { url: string; name: string }) => {
+  return (
+    <div className=" flex items-center gap-2">
+      <Avatar className="cursor-pointer">
+        <AvatarImage src={url} alt={name} />
+        <AvatarFallback className="bg-primary text-white font-semibold">
+          {name.charAt(0).toUpperCase()}
+        </AvatarFallback>
+      </Avatar>
+      <p>{name}</p>
+    </div>
+  );
+};
+
 const Navbar = ({
   logo = {
     url: "/",
@@ -73,6 +90,8 @@ const Navbar = ({
     loginGoogle: { title: "Login with Google", url: "/api/auth/google" },
   },
 }: NavbarProps) => {
+  const authStore = useAuthStore();
+
   return (
     <section className="py-4 fixed w-full bg-background border-b border-primary z-50">
       <div className="mx-auto container">
@@ -94,18 +113,26 @@ const Navbar = ({
               </NavigationMenuList>
             </NavigationMenu>
           </div>
-          <div className="flex gap-2">
-            <Button asChild size="sm">
-              <a href={auth.loginGoogle.url}>
-                <img
-                  src="https://cdn.simpleicons.org/google/000000"
-                  alt="google-icon"
-                  className="size-4"
-                />
-                {auth.loginGoogle.title}
-              </a>
-            </Button>
-          </div>
+
+          {authStore.isAuthenticated ? (
+            <AvatarName
+              url={authStore.userData?.profilePhotoUrl || ""}
+              name={authStore.userData?.name || "User"}
+            />
+          ) : (
+            <div className="flex gap-2">
+              <Button asChild size="sm">
+                <a href={auth.loginGoogle.url}>
+                  <img
+                    src="https://cdn.simpleicons.org/google/000000"
+                    alt="google-icon"
+                    className="size-4"
+                  />
+                  {auth.loginGoogle.title}
+                </a>
+              </Button>
+            </div>
+          )}
         </nav>
 
         {/* Mobile Menu */}
@@ -115,44 +142,58 @@ const Navbar = ({
             <a href={logo.url} className="flex items-center gap-2">
               {logo.src}
             </a>
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Menu className="size-4" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent className="overflow-y-auto">
-                <SheetHeader>
-                  <SheetTitle>
-                    <a href={logo.url} className="flex items-center gap-2">
-                      {logo.src}
-                    </a>
-                  </SheetTitle>
-                </SheetHeader>
-                <div className="flex flex-col gap-6 p-4">
-                  <Accordion
-                    type="single"
-                    collapsible
-                    className="flex w-full flex-col gap-4"
-                  >
-                    {menu.map((item) => renderMobileMenuItem(item))}
-                  </Accordion>
-
-                  <div className="flex flex-col gap-3">
-                    <Button asChild>
-                      <a href={auth.loginGoogle.url}>
-                        <img
-                          src="https://cdn.simpleicons.org/google/000000"
-                          alt="google-icon"
-                          className="size-4"
-                        />
-                        {auth.loginGoogle.title}
+            <div className="flex items-center gap-3">
+              {authStore.isAuthenticated && (
+                <AvatarName
+                  url={authStore.userData?.profilePhotoUrl || ""}
+                  name={authStore.userData?.name || "User"}
+                />
+              )}
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <Menu className="size-4" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent className="overflow-y-auto">
+                  <SheetHeader>
+                    <SheetTitle>
+                      <a href={logo.url} className="flex items-center gap-2">
+                        {logo.src}
                       </a>
-                    </Button>
+                    </SheetTitle>
+                  </SheetHeader>
+                  <div className="flex flex-col gap-6 p-4">
+                    <Accordion
+                      type="single"
+                      collapsible
+                      className="flex w-full flex-col gap-4"
+                    >
+                      {menu.map((item) => renderMobileMenuItem(item))}
+                    </Accordion>
+
+                    <div className="flex flex-col gap-3">
+                      {!authStore.isAuthenticated ? (
+                        <Button asChild>
+                          <a href={auth.loginGoogle.url}>
+                            <img
+                              src="https://cdn.simpleicons.org/google/000000"
+                              alt="google-icon"
+                              className="size-4"
+                            />
+                            {auth.loginGoogle.title}
+                          </a>
+                        </Button>
+                      ) : (
+                        <Button variant="outline" className="w-full">
+                          Logout
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </SheetContent>
-            </Sheet>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
       </div>

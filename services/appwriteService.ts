@@ -6,7 +6,6 @@ export type userType = {
   email: string;
   refreshToken: string;
   accessToken: string;
-  refreshTokenExpiry: number;
   profilePhotoUrl?: string;
 };
 
@@ -41,6 +40,19 @@ class AppwriteService {
     } catch (error) {
       console.log("Error checking user existence:", error);
       return null;
+    }
+  }
+
+  async updateUser(userId: string, data: Partial<userType>) {
+    try {
+      const res = await tablesDB.updateRow({
+        databaseId: this.dbId,
+        tableId: this.userTableId,
+        rowId: userId,
+        data: data,
+      });
+    } catch (error) {
+      console.log("Error updating user:", error);
     }
   }
 }

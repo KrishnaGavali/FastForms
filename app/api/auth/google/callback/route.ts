@@ -6,9 +6,6 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     const code = req.headers.get("code")?.split(" ")[1] || "";
-    const prompt = req.headers.get("prompt") || "consent";
-
-    console.log("Received code:", code);
 
     if (!code) {
       return NextResponse.json(
@@ -21,9 +18,8 @@ export async function POST(req: Request) {
       );
     }
 
+    // Get tokens from authorization code
     const res = await GoogleAuthService.getToken(code);
-
-    console.log("Token response:", res);
 
     if (!res?.tokens) {
       return NextResponse.json(
@@ -36,6 +32,7 @@ export async function POST(req: Request) {
       );
     }
 
+    // Verify required scopes
     const formsScope = res.tokens.scope?.includes(googleAuthScopes[2]);
 
     if (!formsScope) {
@@ -48,6 +45,7 @@ export async function POST(req: Request) {
       );
     }
 
+    // Set credentials and fetch user info
     GoogleAuthService.setCredentials(res.tokens);
     const userInfo = await GoogleAuthService.getUserInfo();
 
@@ -62,32 +60,46 @@ export async function POST(req: Request) {
       );
     }
 
+    // Check if user exists
     const userExists = await AppwriteService.userExists(userInfo.email!);
 
-    console.log("User exists response:", userExists);
-    console.log("Prompt value:", prompt);
-    console.log("Res tokens:", res.tokens);
+    // Calculate token expiry date
+    const expiryDate = res.tokens.expiry_date
+      ? new Date(res.tokens.expiry_date).toISOString()
+      : null;
 
-    if (
-      userExists &&
-      userExists.total === 0 &&
-      prompt === "consent" &&
-      res.tokens.expiry_date
-    ) {
-      const expiryDate = new Date(res.tokens.expiry_date).toISOString();
-      
+    console.log("User exists response:", userExists);
+    console.log("Token expiry date:", expiryDate);
+    console.log("Token data:", {
+      accessToken: res.tokens.access_token,
+      refreshToken: res.tokens.refresh_token,
+      expiryDate: res.tokens.expiry_date,
+    });
+
+    // Create or update user with tokens
+    if (userExists && userExists.total === 0) {
       await AppwriteService.createUser({
         name: userInfo.name || "",
         email: userInfo.email || "",
         refreshToken: res.tokens.refresh_token || "",
         accessToken: res.tokens.access_token || "",
-        refreshTokenExpiry: res.tokens.expiry_date,
         profilePhotoUrl: userInfo.picture || "",
       });
-      
-      console.log("Token expiry date:", expiryDate);
+
+      console.log("New user created with tokens");
     } else {
-      console.log("User already exists in the database.");
+      const userId = userExists?.rows[0].$id;
+
+      if (!userId)
+        return NextResponse.json(
+          { success: false, message: "User ID not found" },
+          { status: 400 }
+        );
+
+      await AppwriteService.updateUser(userId, {
+        refreshToken: res.tokens.refresh_token || "",
+        accessToken: res.tokens.access_token || "",
+      });
     }
 
     return NextResponse.json(
