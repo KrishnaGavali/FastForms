@@ -183,7 +183,9 @@ export default function Page() {
           <Card className="w-full max-w-md px-5 ">
             <CardHeader className="space-y-4">
               <h1 className="text-2xl font-bold">Authenticating</h1>
-              <CardDescription>Please wait while we log you in...</CardDescription>
+              <CardDescription>
+                Please wait while we log you in...
+              </CardDescription>
               <CardAction>
                 <div className="loader mt-4 flex justify-center">
                   <div className="w-8 h-8 border-4 border-primary border-t-transparent border-l-transparent rounded-full animate-spin"></div>
