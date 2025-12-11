@@ -1,20 +1,6 @@
-import {
-  BatteryCharging,
-  GitPullRequest,
-  Layers,
-  RadioTower,
-  SquareKanban,
-  WandSparkles,
-  Bot,
-  Zap,
-  Settings,
-  Sparkles,
-  CheckCircle2,
-  Rocket,
-} from "lucide-react";
+import { Bot, Zap, Settings, CheckCircle2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 
 interface Feature {
   heading: string;
