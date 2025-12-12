@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, FormEvent } from "react";
-import { SidebarTrigger } from "../ui/sidebar";
 import {
   PromptInput,
   PromptInputActionAddAttachments,
@@ -17,6 +16,8 @@ import {
   PromptInputTextarea,
   PromptInputTools,
 } from "../ai-elements/prompt-input";
+
+import { SidebarTrigger } from "../ui/sidebar";
 
 const PromptInputCom = () => {
   const handleSubmit = (
@@ -118,22 +119,27 @@ const CreateForm = () => {
   const [view, setView] = useState<"structure" | "chat">("structure");
 
   return (
-    <div className="flex-1 text-foreground flex flex-col bg-background pt-24 p-6">
-      {/* Header */}
-      <div className="mb-12 max-w-4xl">
-        <div className="inline-flex items-center gap-2 mb-4">
-          <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/30">
-            <span className="text-xs font-semibold text-primary">
-              ✨ AI Powered
-            </span>
+    <div className="flex-1 text-foreground flex flex-col bg-background pt-24 p-6 items-center">
+      {/* Header with Sidebar Trigger */}
+      <div className="mb-12 max-w-4xl w-full flex items-start justify-between">
+        <div className="flex-1">
+          <div className="inline-flex items-center gap-2 mb-4">
+            <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/30">
+              <span className="text-xs font-semibold text-primary">
+                ✨ AI Powered
+              </span>
+            </div>
           </div>
+          <h1 className="text-4xl font-bold text-foreground mb-3">
+            Create New Form
+          </h1>
+          <p className="text-base text-muted-foreground">
+            Describe your form in plain English. AI will generate it instantly.
+          </p>
         </div>
-        <h1 className="text-4xl font-bold text-foreground mb-3">
-          Create New Form
-        </h1>
-        <p className="text-base text-muted-foreground">
-          Describe your form in plain English. AI will generate it instantly.
-        </p>
+        <div className="">
+          <SidebarTrigger className="text-foreground hover:bg-primary/10" />
+        </div>
       </div>
 
       {/* Main Content */}
