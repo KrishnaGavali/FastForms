@@ -93,7 +93,7 @@ const Navbar = ({
   const authStore = useAuthStore();
 
   return (
-    <section className="py-4 fixed w-full bg-background border-b border-primary z-50">
+    <section className="py-4 px-3 fixed w-full bg-background border-b border-primary z-50">
       <div className="mx-auto container">
         {/* Desktop Menu */}
         <nav className="hidden items-center justify-around lg:flex mx-auto w-full ">

@@ -18,6 +18,7 @@ import {
 } from "../ai-elements/prompt-input";
 
 import { SidebarTrigger } from "../ui/sidebar";
+import { Check, Clipboard, Lightbulb, Pencil, Star } from "lucide-react";
 
 const PromptInputCom = () => {
   const handleSubmit = (
@@ -58,7 +59,7 @@ const PromptInputCom = () => {
             </PromptInputActionMenuContent>
           </PromptInputActionMenu>
         </PromptInputTools>
-        <PromptInputSubmit disabled={!text && !status} status={status} />
+        <PromptInputSubmit />
       </PromptInputFooter>
     </PromptInput>
   );
@@ -67,22 +68,22 @@ const PromptInputCom = () => {
 const QuickTips = () => {
   const tips = [
     {
-      icon: "✏️",
+      icon: <Pencil />,
       title: "Be Descriptive",
       description: "Clearly describe what fields you need and their purpose",
     },
     {
-      icon: "📋",
+      icon: <Clipboard />,
       title: "Specify Field Types",
       description: "Mention email, date picker, dropdown, checkbox, etc.",
     },
     {
-      icon: "⭐",
+      icon: <Star />,
       title: "Mark Required Fields",
       description: "Specify which fields are mandatory for users to fill",
     },
     {
-      icon: "✔️",
+      icon: <Check />,
       title: "Add Validation",
       description: "Include validation rules like email format or number range",
     },
@@ -90,7 +91,9 @@ const QuickTips = () => {
 
   return (
     <div className="mt-8 space-y-3">
-      <h3 className="text-sm font-semibold text-foreground">💡 Quick Tips</h3>
+      <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+        <Lightbulb className="text-primary" /> Quick Tips
+      </h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {tips.map((tip, index) => (
           <div
@@ -98,7 +101,7 @@ const QuickTips = () => {
             className="p-4 rounded-lg border border-border/50 bg-card/30 hover:bg-card/50 hover:border-primary/30 transition-all duration-200"
           >
             <div className="flex items-start gap-3">
-              <span className="text-lg shrink-0">{tip.icon}</span>
+              <span className="text-lg shrink-0 text-primary">{tip.icon}</span>
               <div className="space-y-1">
                 <p className="text-xs font-semibold text-foreground">
                   {tip.title}
@@ -125,8 +128,8 @@ const CreateForm = () => {
         <div className="flex-1">
           <div className="inline-flex items-center gap-2 mb-4">
             <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/30">
-              <span className="text-xs font-semibold text-primary">
-                ✨ AI Powered
+              <span className="text-xs font-semibold text-primary flex items-center gap-1">
+                <Star size={15} /> AI Powered
               </span>
             </div>
           </div>
