@@ -13,11 +13,11 @@ const TopBar = ({
   const [isEditingName, setIsEditingName] = useState(false);
 
   return (
-    <div className="w-full border-b border-border/40 backdrop-blur-sm fixed bg-background h-14">
+    <div className="w-full border-b border-muted-foreground/50 backdrop-blur-sm fixed bg-background h-14 z-40">
       {/* Top section */}
-      <div className=" py-3 flex items-center gap-4">
+      <div className=" py-3 flex items-center gap-4 h-full">
         {/* Left - Sidebar trigger & Form name */}
-        <div className="flex items-center gap-3 min-w-0 flex-1">
+        <div className="flex items-center gap-3 min-w-0 flex-1 h-full">
           <SidebarTrigger className="text-muted-foreground hover:text-foreground transition-colors shrink-0" />
 
           {/* Form Name - Editable */}
@@ -48,20 +48,9 @@ const TopBar = ({
         </div>
 
         {/* Right - View switcher & Actions */}
-        <div className="flex items-center gap-3 flex md:hidden">
+        <div className="flex items-center gap-3 md:hidden">
           {/* View Switcher */}
           <div className="flex items-center gap-1 p-1 bg-card/50 border border-border/60 rounded-lg">
-            <button
-              onClick={() => setView("structure")}
-              className={`  px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200  items-center gap-1.5 ${
-                view === "structure"
-                  ? "bg-primary/15 text-primary border border-primary/30"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <LayoutGrid className="w-4 h-4" />
-              <span className="hidden md:inline">Structure</span>
-            </button>
             <button
               onClick={() => setView("chat")}
               className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200 flex items-center gap-1.5 ${
@@ -72,6 +61,17 @@ const TopBar = ({
             >
               <MessageCircle className="w-4 h-4" />
               <span className="hidden md:inline">Chat</span>
+            </button>
+            <button
+              onClick={() => setView("structure")}
+              className={`  px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200  items-center gap-1.5 ${
+                view === "structure"
+                  ? "bg-primary/15 text-primary border border-primary/30"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <LayoutGrid className="w-4 h-4" />
+              <span className="hidden md:inline">Structure</span>
             </button>
           </div>
         </div>

@@ -9,16 +9,25 @@ const FormBuilder = () => {
   const [view, setView] = useState<"structure" | "chat">("chat");
 
   return (
-    <div className=" flex-1">
+    <div className="flex-1 flex flex-col">
       <TopBar view={view} setView={setView} />
 
-      <div className="block md:hidden h-full pt-14">
+      {/* Mobile View */}
+      <div className="block md:hidden flex-1 overflow-hidden pt-14">
         {view === "chat" ? <ChatColumn /> : <FormPreview />}
       </div>
 
-      <div className=" flex-1 h-full hidden md:flex pt-14">
-        <ChatColumn />
-        <FormPreview />
+      {/* Desktop View */}
+      <div className="hidden md:flex flex-1 pt-14 overflow-hidden gap-0">
+        {/* Chat Column - Left */}
+        <div className="w-1/4 h-full overflow-hidden flex">
+          <ChatColumn />
+        </div>
+
+        {/* Form Preview - Right */}
+        <div className="flex-1 h-full overflow-hidden flex">
+          <FormPreview />
+        </div>
       </div>
     </div>
   );
